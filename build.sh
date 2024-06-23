@@ -1,4 +1,3 @@
-cd picow_ds4
 git submodule update --init --recursive
 mkdir build
 cd build
