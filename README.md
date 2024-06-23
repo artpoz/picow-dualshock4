@@ -1,4 +1,4 @@
-# pico-ps4
+# picow-dualshock4
 
 ```sh
 sh build.sh
