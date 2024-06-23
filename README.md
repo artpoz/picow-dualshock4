@@ -1,6 +1,11 @@
-cd picow_ds4
-git submodule update --init --recursive
-mkdir build
-cd build
-cmake -DPICO_BOARD=pico_w -DPICO_SDK_PATH=../../pico-sdk ../
-make
+# pico-ps4
+
+```sh
+sh build.sh
+```
+
+The .uf2 file will be build/src/picow_ds4.uf2
+
+## LINKS
+
+https://github.com/usedbytes/picow_ds4
