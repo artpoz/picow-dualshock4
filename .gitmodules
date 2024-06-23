@@ -1,0 +1,10 @@
+[submodule "pico-sdk"]
+	path = pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk
+	tag = v1.5.1
+
+[submodule "btstack"]
+	path = btstack
+	# url = https://github.com/usedbytes/btstack
+	url = https://github.com/bluekitchen/btstack
+	tag = v1.5.6.3

@@ -1,0 +1,4 @@
+# https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html#resetting-flash-memory
+flash_nuke.uf2
+
+build/
