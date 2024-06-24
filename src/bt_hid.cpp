@@ -291,13 +291,14 @@ static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packe
 			}
 			break;
 		case HID_SUBEVENT_SET_PROTOCOL_RESPONSE:
+		{
 			status = hid_subevent_set_protocol_response_get_handshake_status(packet);
 			if (status != HID_HANDSHAKE_PARAM_TYPE_SUCCESSFUL)
 			{
 				printf("Protocol handshake error: 0x%02x\n", status);
 				break;
 			}
-			hid_protocol_mode_t proto = hid_subevent_set_protocol_response_get_protocol_mode(packet);
+			hid_protocol_mode_t proto = static_cast<hid_protocol_mode_t>(hid_subevent_set_protocol_response_get_protocol_mode(packet));
 			switch (proto)
 			{
 			case HID_PROTOCOL_MODE_BOOT:
@@ -310,7 +311,8 @@ static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packe
 				printf("Negotiated unknown protocol: 0x%x\n", proto);
 				break;
 			}
-			break;
+		}
+		break;
 		case HID_SUBEVENT_CONNECTION_CLOSED:
 			printf("HID connection closed: %s\n", bd_addr_to_str(connected_addr));
 			bt_hid_disconnected(connected_addr);

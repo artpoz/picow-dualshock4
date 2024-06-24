@@ -1,17 +1,17 @@
-add_executable(picow_ds4
-	main.c
-	bt_hid.c
+add_executable(picow_dualshock4
+	main.cpp
+	bt_hid.cpp
 )
 
-pico_enable_stdio_uart(picow_ds4 0)
-pico_enable_stdio_usb(picow_ds4 1)
-# pico_enable_stdio_semihosting(picow_ds4 0)
+pico_enable_stdio_uart(picow_dualshock4 0)
+pico_enable_stdio_usb(picow_dualshock4 1)
+# pico_enable_stdio_semihosting(picow_dualshock4 0)
 
-target_include_directories(picow_ds4 PRIVATE
+target_include_directories(picow_dualshock4 PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}
 )
 
-target_link_libraries(picow_ds4
+target_link_libraries(picow_dualshock4
 	hardware_pwm
 	hardware_gpio
 	pico_stdlib
@@ -22,4 +22,4 @@ target_link_libraries(picow_ds4
 	pico_multicore
 )
 
-pico_add_extra_outputs(picow_ds4)
+pico_add_extra_outputs(picow_dualshock4)

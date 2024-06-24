@@ -1,6 +1,3 @@
-// SPDX-License-Identifier: BSD-3-Clause
-// Copyright (c) 2023 Brian Starkey <stark3y@gmail.com>
-
 #include <stdio.h>
 #include <string.h>
 
@@ -11,8 +8,6 @@
 
 #include "bt_hid.h"
 
-// These magic values are just taken from M0o+, not calibrated for
-// the Tiny chassis.
 #define PWM_MIN 80
 #define PWM_MAX (PWM_MIN + 127)
 
@@ -145,7 +140,7 @@ void chassis_set(struct chassis *chassis, int8_t linear, int8_t rot)
 	chassis_set_raw(chassis, l, r);
 }
 
-void main(void)
+int main(void)
 {
 	stdio_init_all();
 
@@ -173,4 +168,6 @@ void main(void)
 		int8_t rot = clamp8(-(state.rx - 128));
 		chassis_set(&chassis, linear, rot);
 	}
+
+	return 0;
 }
