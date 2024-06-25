@@ -4,4 +4,5 @@ sed -i -e "s/#define MAX_ATTRIBUTE_VALUE_SIZE 300/#define MAX_ATTRIBUTE_VALUE_SI
 mkdir build
 cd build
 cmake -DPICO_BOARD=pico_w -DPICO_SDK_PATH=../pico-sdk ../
-make
+JOBS=$(($(grep cpu.cores /proc/cpuinfo | sort -u | sed 's/[^0-9]//g') + 1))
+make -j${JOBS}

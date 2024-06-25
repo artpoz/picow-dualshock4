@@ -13,16 +13,7 @@
 
 static inline int8_t clamp8(int16_t value)
 {
-	if (value > 127)
-	{
-		return 127;
-	}
-	else if (value < -128)
-	{
-		return -128;
-	}
-
-	return value;
+	return clamp(value, -128, 127);
 }
 
 struct slice
@@ -59,14 +50,9 @@ void chassis_init(struct chassis *chassis, uint8_t pin_la, uint8_t pin_ra)
 	init_slice(&chassis->slice_r, pwm_gpio_to_slice_num(pin_ra), PWM_MIN, pin_ra);
 }
 
-static inline uint8_t abs8(int8_t v)
-{
-	return v < 0 ? -v : v;
-}
-
 void slice_set_with_brake(struct slice *slice, int8_t value, bool brake)
 {
-	uint8_t mag = abs8(value);
+	uint8_t mag = abs(value);
 
 	if (value == 0)
 	{
@@ -100,15 +86,8 @@ void chassis_set(struct chassis *chassis, int8_t linear, int8_t rot)
 {
 	// Positive rotation == CCW == right goes faster
 
-	if (linear < -127)
-	{
-		linear = -127;
-	}
-
-	if (rot < -127)
-	{
-		rot = -127;
-	}
+	linear = max(-127, linear);
+	rot = max(-127, rot);
 
 	int l = linear - rot;
 	int r = linear + rot;
@@ -148,7 +127,6 @@ int main(void)
 	printf("Hello\n");
 
 	multicore_launch_core1(bt_main);
-	// Wait for init (should do a handshake with the fifo here?)
 	sleep_ms(1000);
 
 	struct chassis chassis = {0};
@@ -159,9 +137,7 @@ int main(void)
 	{
 		sleep_ms(20);
 		bt_hid_get_latest(&state);
-		printf("buttons: %04x, l: %d,%d, r: %d,%d, l2,r2: %d,%d hat: %d\n",
-					 state.buttons, state.lx, state.ly, state.rx, state.ry,
-					 state.l2, state.r2, state.hat);
+		printf("buttons: %04x, l: %d,%d, r: %d,%d, l2,r2: %d,%d hat: %d\n", state.buttons, state.lx, state.ly, state.rx, state.ry, state.l2, state.r2, state.hat);
 
 		float speed_scale = 1.0;
 		int8_t linear = clamp8(-(state.ly - 128) * speed_scale);
