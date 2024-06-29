@@ -5,7 +5,8 @@
 // i.e. start this on Core 1 with multicore_launch_core1()
 void bt_main(void);
 
-struct bt_hid_state {
+struct bt_hid_state
+{
 	uint16_t buttons;
 	uint8_t lx;
 	uint8_t ly;
@@ -19,3 +20,5 @@ struct bt_hid_state {
 
 // Get the latest controller state
 void bt_hid_get_latest(struct bt_hid_state *dst);
+
+bool bt_hid_get_can_use();

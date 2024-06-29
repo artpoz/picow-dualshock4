@@ -29,6 +29,8 @@ static uint16_t hid_host_cid = 0;
 static bool hid_host_descriptor_available = false;
 static hid_protocol_mode_t hid_host_report_mode = HID_PROTOCOL_MODE_REPORT;
 
+static bool hid_can_use = false;
+
 static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint16_t size);
 
 static void hid_host_setup(void)
@@ -124,6 +126,11 @@ static void hid_host_handle_interrupt_report(const uint8_t *packet, uint16_t pac
 	// Sensors will also need calibration
 }
 
+bool bt_hid_get_can_use()
+{
+	return hid_can_use;
+}
+
 void bt_hid_get_latest(struct bt_hid_state *dst)
 {
 	async_context_t *context = cyw43_arch_async_context();
@@ -179,6 +186,7 @@ static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packe
 		status = hci_event_disconnection_complete_get_status(packet);
 		reason = hci_event_disconnection_complete_get_reason(packet);
 		printf("Disconnection complete: status: %x, reason: %x\n", status, reason);
+		hid_can_use = false;
 		break;
 	case HCI_EVENT_MAX_SLOTS_CHANGED:
 		status = hci_event_max_slots_changed_get_lmp_max_slots(packet);
@@ -214,6 +222,7 @@ static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packe
 			hid_host_cid = hid_subevent_connection_opened_get_hid_cid(packet);
 			printf("Connected to %s\n", bd_addr_to_str(event_addr));
 			bd_addr_copy(connected_addr, event_addr);
+			hid_can_use = true;
 			break;
 		case HID_SUBEVENT_DESCRIPTOR_AVAILABLE:
 			status = hid_subevent_descriptor_available_get_status(packet);

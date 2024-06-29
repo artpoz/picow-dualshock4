@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <algorithm>
 
 #include "hardware/gpio.h"
 #include "hardware/pwm.h"
@@ -13,7 +14,7 @@
 
 static inline int8_t clamp8(int16_t value)
 {
-	return clamp(value, -128, 127);
+	return std::clamp<int8_t>(value, -128, 127);
 }
 
 struct slice
@@ -52,7 +53,7 @@ void chassis_init(struct chassis *chassis, uint8_t pin_la, uint8_t pin_ra)
 
 void slice_set_with_brake(struct slice *slice, int8_t value, bool brake)
 {
-	uint8_t mag = abs(value);
+	uint8_t mag = std::abs(value);
 
 	if (value == 0)
 	{
@@ -86,8 +87,8 @@ void chassis_set(struct chassis *chassis, int8_t linear, int8_t rot)
 {
 	// Positive rotation == CCW == right goes faster
 
-	linear = max(-127, linear);
-	rot = max(-127, rot);
+	linear = std::max<int8_t>(-127, linear);
+	rot = std::max<int8_t>(-127, rot);
 
 	int l = linear - rot;
 	int r = linear + rot;
@@ -136,13 +137,16 @@ int main(void)
 	for (;;)
 	{
 		sleep_ms(20);
-		bt_hid_get_latest(&state);
-		printf("buttons: %04x, l: %d,%d, r: %d,%d, l2,r2: %d,%d hat: %d\n", state.buttons, state.lx, state.ly, state.rx, state.ry, state.l2, state.r2, state.hat);
+		if (bt_hid_get_can_use())
+		{
+			bt_hid_get_latest(&state);
+			printf("buttons: %04x, l: %d,%d, r: %d,%d, l2,r2: %d,%d hat: %d\n", state.buttons, state.lx, state.ly, state.rx, state.ry, state.l2, state.r2, state.hat);
 
-		float speed_scale = 1.0;
-		int8_t linear = clamp8(-(state.ly - 128) * speed_scale);
-		int8_t rot = clamp8(-(state.rx - 128));
-		chassis_set(&chassis, linear, rot);
+			float speed_scale = 1.0;
+			int8_t linear = clamp8(-(state.ly - 128) * speed_scale);
+			int8_t rot = clamp8(-(state.rx - 128));
+			chassis_set(&chassis, linear, rot);
+		}
 	}
 
 	return 0;
