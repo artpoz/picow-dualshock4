@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include <stdio.h>
-// #include <stdlib.h>
 #include <string.h>
 
 #include "pico/stdlib.h"
@@ -130,8 +129,6 @@ char *get_mac(uint8_t packet_type, uint8_t *packet, uint8_t event)
       if (index >= 0)
         break; // already in our list
 
-      // 10:44:33.696 -> Device found: DC:AF:68:C3:23:B1 with COD: 0x002508, pageScan 1, clock offset 0x7dd1, rssi -60 dBm, name 'Wireless Controller'
-
       memcpy(devices[deviceCount].address, addr, 6);
       devices[deviceCount].pageScanRepetitionMode = gap_event_inquiry_result_get_page_scan_repetition_mode(packet);
       devices[deviceCount].clockOffset = gap_event_inquiry_result_get_clock_offset(packet);
@@ -156,7 +153,6 @@ char *get_mac(uint8_t packet_type, uint8_t *packet, uint8_t event)
 
         if (strcmp(name_buffer, "Wireless Controller") == 0)
         {
-          printf("SET1\n");
           mac = mac_addr;
         }
       }
@@ -194,7 +190,6 @@ char *get_mac(uint8_t packet_type, uint8_t *packet, uint8_t event)
 
           if (strcmp((char const *)&packet[9], "Wireless Controller") == 0)
           {
-            printf("SET2\n");
             mac = bd_addr_to_str(addr);
           }
         }
@@ -214,11 +209,6 @@ char *get_mac(uint8_t packet_type, uint8_t *packet, uint8_t event)
 
   default:
     break;
-  }
-
-  if (mac[0] != '\0')
-  {
-    // gap_inquiry_stop();
   }
 
   return mac;

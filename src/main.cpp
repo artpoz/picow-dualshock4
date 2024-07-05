@@ -85,8 +85,6 @@ void chassis_set_raw(struct chassis *chassis, int8_t left, int8_t right)
 
 void chassis_set(struct chassis *chassis, int8_t linear, int8_t rot)
 {
-	// Positive rotation == CCW == right goes faster
-
 	linear = std::max<int8_t>(-127, linear);
 	rot = std::max<int8_t>(-127, rot);
 
@@ -114,7 +112,6 @@ void chassis_set(struct chassis *chassis, int8_t linear, int8_t rot)
 	l -= adj;
 	r -= adj;
 
-	// FIXME: Motor directions should be a parameter
 	r = -r;
 
 	chassis_set_raw(chassis, l, r);
