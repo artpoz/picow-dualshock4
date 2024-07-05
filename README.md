@@ -9,6 +9,7 @@ The .uf2 file will be build/src/picow_ds4.uf2
 ## LINKS
 
 <https://github.com/usedbytes/picow_ds4>
+<https://github.com/bluekitchen/btstack/blob/master/example/gap_inquiry.c>
 
 ## memo
 

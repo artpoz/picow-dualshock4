@@ -1,6 +1,7 @@
 add_executable(picow_dualshock4
 	main.cpp
 	bt_hid.cpp
+	scan.cpp
 )
 
 pico_enable_stdio_uart(picow_dualshock4 0)

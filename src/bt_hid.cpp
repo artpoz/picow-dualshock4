@@ -13,10 +13,12 @@
 #include "classic/sdp_server.h"
 
 #include "bt_hid.h"
+#include "scan.h"
 
 #define MAX_ATTRIBUTE_VALUE_SIZE 512
 
-static const char *remote_addr_string = "dc:af:68:c3:23:b1";
+// static const char *remote_addr_string = "dc:af:68:c3:23:b1";
+static char *remote_addr_string;
 
 static bd_addr_t remote_addr;
 static bd_addr_t connected_addr;
@@ -160,24 +162,51 @@ static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packe
 
 	if (packet_type != HCI_EVENT_PACKET)
 	{
+		printf("Unknown packet type: %x\n", packet_type);
 		return;
 	}
 
 	event = hci_event_packet_get_type(packet);
-	switch (event)
+
+	if (remote_addr_string[0] == '\0')
 	{
-	case BTSTACK_EVENT_STATE:
-		// On boot, we try a manual connection
-		if (btstack_event_state_get_state(packet) == HCI_STATE_WORKING)
+		remote_addr_string = get_mac(packet_type, packet, event);
+		if (remote_addr_string[0] != '\0')
 		{
+			printf("MAC: %s\n", remote_addr_string);
+			sscanf_bd_addr(remote_addr_string, remote_addr);
+			bt_hid_disconnected(remote_addr);
+			printf("SCAN END\n");
+
 			printf("Starting hid_host_connect (%s)\n", bd_addr_to_str(remote_addr));
 			status = hid_host_connect(remote_addr, hid_host_report_mode, &hid_host_cid);
 			if (status != ERROR_CODE_SUCCESS)
 			{
 				printf("hid_host_connect command failed: 0x%02x\n", status);
 			}
+
+			return;
 		}
-		break;
+		else
+		{
+			return;
+		}
+	}
+
+	switch (event)
+	{
+	// case BTSTACK_EVENT_STATE:
+	// 	// On boot, we try a manual connection
+	// 	if (btstack_event_state_get_state(packet) == HCI_STATE_WORKING)
+	// 	{
+	// 		printf("Starting hid_host_connect (%s)\n", bd_addr_to_str(remote_addr));
+	// 		status = hid_host_connect(remote_addr, hid_host_report_mode, &hid_host_cid);
+	// 		if (status != ERROR_CODE_SUCCESS)
+	// 		{
+	// 			printf("hid_host_connect command failed: 0x%02x\n", status);
+	// 		}
+	// 	}
+	// 	break;
 	case HCI_EVENT_CONNECTION_COMPLETE:
 		status = hci_event_connection_complete_get_status(packet);
 		printf("Connection complete: %x\n", status);
@@ -333,8 +362,8 @@ void bt_main(void)
 	btstack_run_loop_add_timer(&blink_timer);
 
 	hid_host_setup();
-	sscanf_bd_addr(remote_addr_string, remote_addr);
-	bt_hid_disconnected(remote_addr);
+	// sscanf_bd_addr(remote_addr_string, remote_addr);
+	// bt_hid_disconnected(remote_addr);
 
 	hci_power_control(HCI_POWER_ON);
 
