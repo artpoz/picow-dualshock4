@@ -1,5 +1,6 @@
 add_executable(picow_dualshock4
 	main.cpp
+	ds4.cpp
 	bt_hid.cpp
 	scan.cpp
 )

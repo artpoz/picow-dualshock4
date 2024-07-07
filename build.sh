@@ -8,5 +8,5 @@ cd build
 cmake -DPICO_BOARD=pico_w -DPICO_SDK_PATH=../pico-sdk ../
 JOBS=$(($(grep cpu.cores /proc/cpuinfo | sort -u | sed 's/[^0-9]//g') + 1))
 make -j${JOBS}
-
+sleep 5
 mv ./build/src/picow_dualshock4.uf2 .
