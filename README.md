@@ -10,6 +10,8 @@ The .uf2 file will be build/src/picow_ds4.uf2
 
 <https://github.com/usedbytes/picow_ds4>
 <https://github.com/bluekitchen/btstack/blob/master/example/gap_inquiry.c>
+<https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf>
+<https://github.com/raspberrypi/pico-examples/blob/master/pwm/led_fade/pwm_led_fade.c>
 
 ## memo
 
