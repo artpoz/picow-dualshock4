@@ -3,6 +3,10 @@
 
 // Setup and run the bluetooth stack, will never return
 // i.e. start this on Core 1 with multicore_launch_core1()
+
+#ifndef BT_HID_H
+#define BT_HID_H
+
 void bt_main(void);
 
 struct bt_hid_state
@@ -22,3 +26,7 @@ struct bt_hid_state
 void bt_hid_get_latest(struct bt_hid_state *dst);
 
 bool bt_hid_get_can_use();
+
+char* get_addr_string();
+
+#endif

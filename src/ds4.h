@@ -1,4 +1,4 @@
-struct bt_hid_state
+/*struct bt_hid_state
 {
   uint16_t buttons;
   uint8_t lx;
@@ -10,6 +10,8 @@ struct bt_hid_state
   uint8_t hat;
   uint8_t pad;
 };
+*/
+#include "bt_hid.h"
 
 void ds4_setup();
 bool ds4_can_use();

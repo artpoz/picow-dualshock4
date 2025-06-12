@@ -4,6 +4,7 @@ add_executable(picow_dualshock4
 	bt_hid.cpp
 	scan.cpp
 	arp.cpp
+	#fs.cpp
 )
 
 pico_enable_stdio_uart(picow_dualshock4 0)
@@ -14,6 +15,7 @@ target_include_directories(picow_dualshock4 PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}
 )
 
+# add_subdirectory(../lib/pico-extras pico-extras)
 target_link_libraries(picow_dualshock4
 	hardware_pwm
 	hardware_gpio
@@ -23,6 +25,7 @@ target_link_libraries(picow_dualshock4
         pico_btstack_ble
         pico_btstack_cyw43
 	pico_multicore
+	hardware_flash	
 )
 
 pico_add_extra_outputs(picow_dualshock4)
