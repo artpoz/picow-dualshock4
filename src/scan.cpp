@@ -4,7 +4,6 @@
 
 #include "pico/stdlib.h"
 #include "btstack.h"
-//#include "fs.h"
 
 #define MAX_DEVICES 20
 enum DEVICE_STATE

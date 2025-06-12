@@ -14,7 +14,6 @@
 
 #include "bt_hid.h"
 #include "scan.h"
-//#include "fs.h"
 
 #define MAX_ATTRIBUTE_VALUE_SIZE 512
 
@@ -180,11 +179,6 @@ static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packe
 			sscanf_bd_addr(remote_addr_string, remote_addr);
 			bt_hid_disconnected(remote_addr);
 			printf("SCAN END\n");
-			//multicore_launch_core2(zapisz_mac(einterpret_cast<const uint8_t*>(remote_addr_string)));
-          	//printf("Save mac\n");
-			//uint8_t mac[MAC_ADDRESS_SIZE] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
-          	//zapisz_mac(reinterpret_cast<const uint8_t*>(remote_addr_string));
-			//zapisz_mac(mac);
 			printf("Starting hid_host_connect (%s)\n", bd_addr_to_str(remote_addr));
 			status = hid_host_connect(remote_addr, hid_host_report_mode, &hid_host_cid);
 			if (status != ERROR_CODE_SUCCESS)
