@@ -4,7 +4,7 @@ add_executable(picow_dualshock4
 	bt_hid.cpp
 	scan.cpp
 	arp.cpp
-	#fs.cpp
+	mac_store.cpp
 )
 
 pico_enable_stdio_uart(picow_dualshock4 0)

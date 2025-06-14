@@ -4,6 +4,7 @@
 
 #include "pico/stdlib.h"
 #include "btstack.h"
+#include "mac_store.h"
 
 #define MAX_DEVICES 20
 enum DEVICE_STATE
@@ -106,10 +107,10 @@ char *get_mac(uint8_t packet_type, uint8_t *packet, uint8_t event)
     case BTSTACK_EVENT_STATE:
       if (btstack_event_state_get_state(packet) == HCI_STATE_WORKING)
       {
-        start_scan();
-        state = ACTIVE;
-      }
-      break;
+          start_scan();
+          state = ACTIVE;      
+      }    
+      break; 
     default:
       break;
     }
@@ -122,6 +123,13 @@ char *get_mac(uint8_t packet_type, uint8_t *packet, uint8_t event)
 
     case GAP_EVENT_INQUIRY_RESULT:
     {
+      if (is_mac_saved())
+      {
+          read_mac(addr);
+          mac = bd_addr_to_str(addr);  
+          return mac; 
+      }
+        
       if (deviceCount >= MAX_DEVICES)
         break; // already full
       gap_event_inquiry_result_get_bd_addr(packet, addr);
@@ -132,7 +140,8 @@ char *get_mac(uint8_t packet_type, uint8_t *packet, uint8_t event)
       memcpy(devices[deviceCount].address, addr, 6);
       devices[deviceCount].pageScanRepetitionMode = gap_event_inquiry_result_get_page_scan_repetition_mode(packet);
       devices[deviceCount].clockOffset = gap_event_inquiry_result_get_clock_offset(packet);
-      // print info
+      // print info            
+
       char *mac_addr = bd_addr_to_str(addr);
       printf("Device found: %s ", mac_addr);
       printf("with COD: 0x%06x, ", (unsigned int)gap_event_inquiry_result_get_class_of_device(packet));
@@ -153,7 +162,7 @@ char *get_mac(uint8_t packet_type, uint8_t *packet, uint8_t event)
 
         if (strcmp(name_buffer, "Wireless Controller") == 0)
         {
-          mac = mac_addr;
+          mac = mac_addr;                          
         }
       }
       else
@@ -190,7 +199,7 @@ char *get_mac(uint8_t packet_type, uint8_t *packet, uint8_t event)
 
           if (strcmp((char const *)&packet[9], "Wireless Controller") == 0)
           {
-            mac = bd_addr_to_str(addr);
+            mac = bd_addr_to_str(addr);                              
           }
         }
         else

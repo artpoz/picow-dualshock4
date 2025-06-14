@@ -14,6 +14,8 @@ void ds4_setup()
   printf("Hello\n");
 
   multicore_launch_core1(bt_main);
+
+  multicore_lockout_victim_init();
   
 }
 

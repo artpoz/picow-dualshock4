@@ -14,6 +14,7 @@
 
 #include "bt_hid.h"
 #include "scan.h"
+#include "mac_store.h"
 
 #define MAX_ATTRIBUTE_VALUE_SIZE 512
 
@@ -134,13 +135,11 @@ bool bt_hid_get_can_use()
 }
 
 void bt_hid_get_latest(struct bt_hid_state *dst)
-{
-	printf("TEST1\n");
+{	
 	async_context_t *context = cyw43_arch_async_context();
 	async_context_acquire_lock_blocking(context);
 	memcpy(dst, &latest, sizeof(*dst));
 	async_context_release_lock(context);
-	printf("TEST2\n");
 }
 
 static void bt_hid_disconnected(bd_addr_t addr)
@@ -178,6 +177,7 @@ static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packe
 			printf("MAC: %s\n", remote_addr_string);
 			sscanf_bd_addr(remote_addr_string, remote_addr);
 			bt_hid_disconnected(remote_addr);
+			save_mac(remote_addr,true);
 			printf("SCAN END\n");
 			printf("Starting hid_host_connect (%s)\n", bd_addr_to_str(remote_addr));
 			status = hid_host_connect(remote_addr, hid_host_report_mode, &hid_host_cid);
@@ -196,18 +196,22 @@ static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packe
 
 	switch (event)
 	{
-	// case BTSTACK_EVENT_STATE:
-	// 	// On boot, we try a manual connection
-	// 	if (btstack_event_state_get_state(packet) == HCI_STATE_WORKING)
-	// 	{
-	// 		printf("Starting hid_host_connect (%s)\n", bd_addr_to_str(remote_addr));
-	// 		status = hid_host_connect(remote_addr, hid_host_report_mode, &hid_host_cid);
-	// 		if (status != ERROR_CODE_SUCCESS)
-	// 		{
-	// 			printf("hid_host_connect command failed: 0x%02x\n", status);
-	// 		}
-	// 	}
-	// 	break;
+	/* case BTSTACK_EVENT_STATE:
+	 	printf("BTSTACK_EVENT_STATE");
+	 	// On boot, we try a manual connection
+	 	if (btstack_event_state_get_state(packet) == HCI_STATE_WORKING && czy_mac_zapisany())
+	 	{
+			odczytaj_mac(remote_addr);
+			printf("remote_addr", )
+			//read_mac_from_flash(remote_addr);
+	 		printf("Starting hid_host_connect (%s)\n", bd_addr_to_str(remote_addr));
+	 		status = hid_host_connect(remote_addr, hid_host_report_mode, &hid_host_cid);
+	 		if (status != ERROR_CODE_SUCCESS)
+	 		{
+	 			printf("hid_host_connect command failed: 0x%02x\n", status);
+	 		}
+	 	}
+	 	break;*/
 	case HCI_EVENT_CONNECTION_COMPLETE:
 		status = hci_event_connection_complete_get_status(packet);
 		printf("Connection complete: %x\n", status);
@@ -216,7 +220,7 @@ static void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packe
 		status = hci_event_disconnection_complete_get_status(packet);
 		reason = hci_event_disconnection_complete_get_reason(packet);
 		printf("Disconnection complete: status: %x, reason: %x\n", status, reason);
-		hid_can_use = false;
+		hid_can_use = false;	
 		break;
 	case HCI_EVENT_MAX_SLOTS_CHANGED:
 		status = hci_event_max_slots_changed_get_lmp_max_slots(packet);
