@@ -38,26 +38,7 @@ int main(void)
     
 	stdio_init_all();
 
-/*
-	save_mac_to_flash()
-	
-	has_saved_mac = read_mac_from_flash(saved_mac);
-    if (has_saved_mac) {
-        printf("Odczytano zapisany MAC: %02X:%02X:%02X:%02X:%02X:%02X\n",
-               saved_mac[0], saved_mac[1], saved_mac[2],
-               saved_mac[3], saved_mac[4], saved_mac[5]);
-    }
-
-   stdio_init_all();
-	sleep_ms(5000);
-*/
-    sleep_ms(1000);
-
-    
-    //uint8_t mac[MAC_ADDRESS_SIZE] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
-    //zapisz_mac(mac,false);
-
-    sleep_ms(1000);
+    sleep_ms(2000);
 
     if (is_mac_saved()) 
     {
@@ -69,8 +50,7 @@ int main(void)
         printf("Adres MAC nie został zapisany.\n");
     }
 
-	sleep_ms(1000);
-	
+	sleep_ms(1000);	
     
 	ds4_setup();
 
@@ -87,7 +67,7 @@ int main(void)
 
     gpio_init(BUTTON_PIN);
     gpio_set_dir(BUTTON_PIN, GPIO_IN);
-    gpio_pull_up(BUTTON_PIN);  // włączamy podciąganie do VCC
+    gpio_pull_up(BUTTON_PIN);  
 
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
@@ -101,7 +81,6 @@ int main(void)
 			bt_hid_state state = ds4_get_state();
 			//printf("buttons: %04x, l: %d,%d, r: %d,%d, l2,r2: %d,%d hat: %d\n", state.buttons, state.lx, state.ly, state.rx, state.ry, state.l2, state.r2, state.hat);
 			   
-
 			float speed_scale1 = 0.1;
         	float speed_scale2 = 0.025;  // 0.05
 			int8_t linear = clamp8(-(state.rx - 128) * speed_scale2);
@@ -112,7 +91,7 @@ int main(void)
 
 		}  
 
-        bool button_pressed = !gpio_get(BUTTON_PIN); // przycisk wciśnięty = stan niski
+        bool button_pressed = !gpio_get(BUTTON_PIN); 
         if (button_pressed)
         {
                 uint8_t mac[MAC_ADDRESS_SIZE] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
@@ -120,8 +99,7 @@ int main(void)
                 gpio_put(LED_PIN, button_pressed);  
         }
 
-	}    
-    
+	}        
    
 	return 0;
 }
